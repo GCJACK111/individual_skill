@@ -7,7 +7,7 @@
   "doi": "",
   "title": "",
   "reference": "",
-  "schema_version": 1,
+  "schema_version": 2,
   "kind": "research",
   "series": "",
   "source_sha256": "",
@@ -15,34 +15,34 @@
     "headline": "",
     "byline": "",
     "figures": [],
-    "route_missing_reason": "",
-    "caption1": "",
-    "guide1": "",
-    "caption2": "",
-    "guide2": ""
+    "route_missing_reason": ""
   },
   "technical": {
     "location": "",
     "performance": [],
     "performance_missing_reason": ""
   },
-  "wechat": {
-    "problem": "",
-    "method": "",
-    "result": "",
-    "conclusion": [
+  "narrative": {
+    "sections": [
       {
-        "title": "",
-        "text": ""
+        "heading": "引言",
+        "paragraphs": [
+          ""
+        ],
+        "figure_indices": []
       },
       {
-        "title": "",
-        "text": ""
-      },
-      {
-        "title": "",
-        "text": ""
+        "heading": "",
+        "paragraphs": [
+          ""
+        ],
+        "figure_indices": []
       }
-    ]
+    ],
+    "result_heading": "",
+    "result_paragraphs": [
+      ""
+    ],
+    "closing": ""
   }
 }
