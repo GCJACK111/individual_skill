@@ -1,4 +1,4 @@
-"""Render curated Chinese paper reviews with original figures and concrete, actionable takeaways."""
+"""Render source-backed Chinese paper articles with interleaved figures and a concise closing."""
 import argparse
 from validate_record import load_records, validate_record, digest
 import json
@@ -101,8 +101,17 @@ class ArticlePage:
 
     def heading(self, text):
         self.items.append(('bar', self.y + 1))
-        self.items.append(('text', MARGIN + 11, self.y + 15, text, HEADING, 15.5, RED))
-        self.y += 30
+        for line in wrap(text, COLUMN - 11, HEADING, 15.5):
+            self.items.append(('text', MARGIN + 11, self.y + 15, line, HEADING, 15.5, RED))
+            self.y += 23
+        self.y += 7
+
+    def append(self, block):
+        offset = self.y
+        for kind, *values in block.items:
+            values[0 if kind == 'bar' else 1] += offset
+            self.items.append((kind, *values))
+        self.y += block.y
 
     def figure(self, image, label, max_height=350):
         scale = min(COLUMN / image.width, max_height / image.height)
@@ -141,7 +150,7 @@ class ArticlePage:
         canvas.showPage()
 
 
-def generate(record, papers, output):
+def generate_legacy(record, papers, output):
     article, technical, editorial = record['article'], record['technical'], record['wechat']
     performance = technical.get('performance', [])
     target = output / f"{record['id']} {record['topic']}.pdf"
@@ -245,6 +254,121 @@ def generate(record, papers, output):
     os.replace(temporary.name, target)
     print(f"{target.name}  [{len(pages)} 页]")
     return {"id": record["id"], "output": target.name, "pages": len(pages), "performance_exhibits": len(performance), "source_sha256": digest(papers / record["source"]), "record_sha256": __import__("hashlib").sha256(json.dumps(record, ensure_ascii=False, sort_keys=True).encode()).hexdigest(), "output_sha256": digest(target)}
+
+
+def narrative_pages(record, original):
+    """Keep each exhibit with its explanation; break at paragraphs, never force a closing page."""
+    article, technical, narrative = record['article'], record['technical'], record['narrative']
+    pages = []
+    page = ArticlePage()
+    page.text(record['journal']+'   /   论文图解', BODY, 10, 14, RED, 11)
+    page.text(article['headline'], HEADING, 23, 31, INK, 10)
+    title_font = BODY if any(ord(c) >= 0x3000 for c in record['title']) else 'Helvetica-Oblique'
+    page.text(record['title'], title_font, 10, 14, MUTED, 7)
+    page.text(article['byline'], BODY, 9.6, 14, MUTED, 3)
+    if record.get('doi'):
+        page.text('DOI  '+record['doi'], 'Helvetica', 9, 12, RED, 17)
+
+    def block():
+        item = ArticlePage()
+        item.y = 0
+        return item
+
+    def add(item, limit=1000):
+        nonlocal page
+        if item.y > 820:
+            raise ValueError('Narrative block too tall: split long prose or divide the original exhibit into labeled parts')
+        if page.y + item.y > limit:
+            pages.append(page)
+            page = ArticlePage()
+            page.text(record['journal']+'   /   论文图解', BODY, 10, 14, RED, 11)
+        page.append(item)
+
+    for section in narrative['sections']:
+        chunks = []
+        for i, paragraph in enumerate(section['paragraphs']):
+            item = block()
+            if i == 0:
+                item.heading(section['heading'])
+            item.text(paragraph)
+            chunks.append(item)
+        for index in section.get('figure_indices', []):
+            figure = article['figures'][index-1]
+            item = block()
+            item.figure(source_figure(original, figure),
+                        f"原文{figure['number']} · PDF 第 {figure['page']} 页｜"+figure['caption'], max_height=480)
+            item.text(figure['guide'], size=11, leading=18, color=MUTED, after=20)
+            chunks.append(item)
+        # Short method sections stay intact so the explanation and its source figure are adjacent.
+        whole = block()
+        for item in chunks:
+            whole.append(item)
+        if whole.y <= 820:
+            add(whole)
+        else:
+            for item in chunks:
+                add(item)
+    if not article['figures']:
+        item = block()
+        item.text('原文路线/机制图说明：'+article['route_missing_reason'], size=10.5, leading=17, color=MUTED)
+        add(item)
+
+    for i, paragraph in enumerate(narrative['result_paragraphs']):
+        item = block()
+        if i == 0:
+            item.heading(narrative['result_heading'])
+        item.text(paragraph)
+        add(item)
+    performance = technical.get('performance', [])
+    for exhibit in performance:
+        item = block()
+        item.text(exhibit['title'], HEADING, 13.5, 21, INK, 8)
+        for paragraph in exhibit.get('paragraphs', []):
+            item.text(paragraph)
+        item.figure(source_figure(original, exhibit),
+                    f"原文{exhibit['number']} · PDF 第 {exhibit['page']} 页", max_height=620)
+        item.text(exhibit['guide'], size=11, leading=18, color=MUTED, after=20)
+        add(item)
+    if not performance:
+        item = block()
+        item.text('原文性能证据说明：'+technical['performance_missing_reason'], size=10.5, leading=17, color=MUTED)
+        add(item)
+
+    item = block()
+    item.heading('结语')
+    item.text(narrative['closing'])
+    item.text('原文依据：'+record['reference'],
+              size=9, leading=14, color=MUTED, after=7)
+    # A short closing may extend the final screen-oriented page instead of becoming an isolated page.
+    add(item, limit=1120)
+    pages.append(page)
+    return pages
+
+
+def generate(record, papers, output):
+    if record.get('schema_version', 1) == 1:
+        return generate_legacy(record, papers, output)
+    target = output / f"{record['id']} {record['topic']}.pdf"
+    with pdfium.PdfDocument(papers / record['source']) as original:
+        validate_record(record, page_count=len(original))
+        pages = narrative_pages(record, original)
+    stream = BytesIO()
+    canvas = Canvas(stream, pageCompression=1)
+    canvas.setTitle(record['article']['headline'])
+    canvas.setSubject(record['title'])
+    canvas.setAuthor((record.get('series', '')+' · ' if record.get('series') else '')+'论文图解')
+    for i, page in enumerate(pages, 1):
+        page.draw(canvas, record, i, len(pages))
+    canvas.save()
+    with NamedTemporaryFile(dir=output, suffix='.tmp', delete=False) as temporary:
+        temporary.write(stream.getvalue())
+    os.replace(temporary.name, target)
+    print(f"{target.name}  [{len(pages)} 页]")
+    return {'id': record['id'], 'output': target.name, 'pages': len(pages),
+            'performance_exhibits': len(record['technical'].get('performance', [])),
+            'source_sha256': digest(papers / record['source']),
+            'record_sha256': __import__('hashlib').sha256(json.dumps(record, ensure_ascii=False, sort_keys=True).encode()).hexdigest(),
+            'output_sha256': digest(target)}
 
 
 def main():
