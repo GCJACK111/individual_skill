@@ -1,0 +1,56 @@
+{
+  "id": "",
+  "topic": "",
+  "source": "",
+  "author": "",
+  "journal": "",
+  "doi": "",
+  "title": "",
+  "reference": "",
+  "schema_version": 1,
+  "kind": "research",
+  "series": "",
+  "source_sha256": "",
+  "article": {
+    "headline": "",
+    "byline": "",
+    "figures": [],
+    "route_missing_reason": "",
+    "caption1": "",
+    "guide1": "",
+    "caption2": "",
+    "guide2": ""
+  },
+  "technical": {
+    "location": "",
+    "performance": [],
+    "performance_missing_reason": ""
+  },
+  "wechat": {
+    "problem": "",
+    "method": "",
+    "result": "",
+    "conclusion": [
+      {
+        "title": "方法的实质贡献",
+        "text": ""
+      },
+      {
+        "title": "实验结果支持什么",
+        "text": ""
+      },
+      {
+        "title": "使用时的边界",
+        "text": ""
+      },
+      {
+        "title": "可借鉴的方法与应用场景",
+        "text": ""
+      },
+      {
+        "title": "总体判断与下一步",
+        "text": ""
+      }
+    ]
+  }
+}

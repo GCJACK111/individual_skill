@@ -1,4 +1,4 @@
 interface:
-  display_name: "文献逻辑梳理"
-  short_description: "面向初学者梳理论文背景、方法、数据与结果，并生成完整 PDF 总结"
-  default_prompt: "使用 $paper-logic-simplifier，基于我提供的论文材料梳理研究逻辑，写一份易懂的结构化总结，最后生成完整总结的 PDF 文件。"
+  display_name: "公众号论文图文解读"
+  short_description: "生成含原论文路线图、完整性能图表和详细 AI 研读结论的中文公众号风格 PDF"
+  default_prompt: "使用 $paper-logic-simplifier，将我提供的论文生成公众号风格图文解读 PDF，保留原文技术路线、模型及性能图表，末页详细讨论贡献、证据、边界和可借鉴的应用场景，并检查最终排版。"
