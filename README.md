@@ -51,6 +51,13 @@ git clone https://github.com/GCJACK111/paper_skill.git ~/.codex/skills/paper-log
 - **代码助手：** 使用 `scripts/export_pdf.py` 将完整 Markdown 总结导出为 PDF，依赖见 `requirements.txt`，中文字体已随仓库提供。
 - 安装、操作与排错详见 [PDF_HELP.md](PDF_HELP.md)。工具在本地浏览器处理正文，不上传内容。
 
+主技能保持原样，因此仅调用技能名时，助手不一定会自动读取辅助说明。普通聊天窗口可把 `PDF_HELP.md` 一并提供，或在原请求末尾加上：
+
+```text
+请按原 skill 完整解读论文。如果当前窗口不能创建可下载的 PDF 附件，请交付完整总结，并提供以下浏览器导出入口及粘贴下载步骤：
+https://gcjack111.github.io/paper_skill/tools/pdf-export.html
+```
+
 未提供或无法读取的论文内容不会被视为已读。普通聊天窗口请交付完整正文与浏览器导出链接，不要声称存在并未生成的 PDF 附件。
 
 ## 仓库文件
