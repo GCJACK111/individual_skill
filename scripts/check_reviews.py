@@ -30,22 +30,47 @@ def inspect_one(path, record):
                 sizes.append(list(page.get_size())); texts.append(text)
         full = ''.join(texts)
         required = [record['article']['headline'], record['title']]
-        required += [record['wechat'][key] for key in ('problem','method','result')]
-        if normalize('我们可以从这篇论文中学到什么') not in texts[-1]:
-            raise ValueError(f'{path.name}: missing actionable takeaways heading')
-        for item in record['wechat']['conclusion']:
-            for key in ('title','text'):
-                if normalize(item[key]) not in texts[-1]:
-                    raise ValueError(f'{path.name}: missing conclusion {key}')
         figures = record['article']['figures']; perf = record['technical'].get('performance', [])
-        dedup = len(figures) > 1 and any((e['page'],e['number']) == (figures[1]['page'],figures[1]['number']) for e in perf)
-        expected_images = min(2,len(figures)) - int(dedup) + len(perf)
+        if record.get('schema_version', 1) == 2:
+            narrative = record['narrative']
+            if normalize(narrative['closing']) not in texts[-1]:
+                raise ValueError(f'{path.name}: missing complete closing paragraph')
+            ordered = []
+            for section in narrative['sections']:
+                required.append(section['heading'])
+                required.extend(section['paragraphs'])
+                ordered.extend([section['heading'], *section['paragraphs']])
+                for index in section.get('figure_indices', []):
+                    f = figures[index-1]
+                    label = f"原文{f['number']} · PDF 第 {f['page']} 页"
+                    required.extend([f['caption'], f['guide'], label])
+                    ordered.extend([label, f['guide']])
+            required.extend([narrative['result_heading'], *narrative['result_paragraphs'], narrative['closing']])
+            ordered.extend([narrative['result_heading'], *narrative['result_paragraphs']])
+            for e in perf:
+                ordered.extend([e['title'], *e.get('paragraphs', []), f"原文{e['number']} · PDF 第 {e['page']} 页", e['guide']])
+            ordered.append(narrative['closing'])
+            cursor = 0
+            for value in ordered:
+                found = full.find(normalize(value), cursor)
+                if found < 0:
+                    raise ValueError(f'{path.name}: missing or out-of-order article content {value[:60]}')
+                cursor = found + len(normalize(value))
+            expected_images = len(figures) + len(perf)
+        else:
+            required += [record['wechat'][key] for key in ('problem','method','result')]
+            for item in record['wechat']['conclusion']:
+                for key in ('title','text'):
+                    if normalize(item[key]) not in texts[-1]:
+                        raise ValueError(f'{path.name}: missing conclusion {key}')
+            dedup = len(figures) > 1 and any((e['page'],e['number']) == (figures[1]['page'],figures[1]['number']) for e in perf)
+            expected_images = min(2,len(figures)) - int(dedup) + len(perf)
+            for i, fig in enumerate(figures[:2], 1):
+                if i == 2 and dedup:
+                    continue
+                required += [record['article'][f'caption{i}'],record['article'][f'guide{i}']]
         if images != expected_images:
             raise ValueError(f'{path.name}: {images} images, expected {expected_images}')
-        for i, fig in enumerate(figures[:2], 1):
-            if i == 2 and dedup:
-                continue
-            required += [record['article'][f'caption{i}'],record['article'][f'guide{i}']]
         for e in perf:
             required += [e['title'],e['guide'],f"原文{e['number']} · PDF 第 {e['page']} 页"]
         for value in required:
