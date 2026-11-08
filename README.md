@@ -43,12 +43,24 @@ git clone https://github.com/GCJACK111/paper_skill.git ~/.codex/skills/paper-log
 8. 至少 5 个后续问题及回答
 9. 完整总结 PDF 文件
 
-本仓库提供技能指令；读取论文和生成 PDF 需要运行环境提供相应文件处理能力与中文字体。未提供或无法读取的内容不会被视为已读。PDF 生成受阻时，技能要求如实报告，而非声称已完成。
+## PDF 无法下载时
+
+普通聊天窗口如果没有文件生成能力，单靠 skill 指令无法创建附件。现在附带独立的 PDF 导出辅助工具，原有 `SKILL.md` 和文献解读功能保持不变。
+
+- **无需编程：** 打开 [浏览器 PDF 导出工具](https://gcjack111.github.io/paper_skill/tools/pdf-export.html)，粘贴完整总结，点击“下载 PDF”。也可以下载仓库后双击 `tools/pdf-export.html` 离线使用。
+- **代码助手：** 使用 `scripts/export_pdf.py` 将完整 Markdown 总结导出为 PDF，依赖见 `requirements.txt`，中文字体已随仓库提供。
+- 安装、操作与排错详见 [PDF_HELP.md](PDF_HELP.md)。工具在本地浏览器处理正文，不上传内容。
+
+未提供或无法读取的论文内容不会被视为已读。普通聊天窗口请交付完整正文与浏览器导出链接，不要声称存在并未生成的 PDF 附件。
 
 ## 仓库文件
 
 - `SKILL.md`：技能入口和工作规范。
 - `agents/openai.yaml`：Codex 界面显示信息与默认提示。
+- `PDF_HELP.md`：PDF 导出与排错说明。
+- `tools/pdf-export.html`：可在线或离线使用的浏览器 PDF 导出工具。
+- `scripts/export_pdf.py`、`requirements.txt`：代码环境的 PDF 导出脚本与依赖。
+- `assets/fonts/`：中文字体与独立的 OFL 字体许可证。
 
 ## 许可证
 
