@@ -57,8 +57,8 @@ def validate_record(record, papers=None, page_count=None):
     for key in ('problem', 'method', 'result'):
         required_text(w, key, 'wechat')
     conclusions = w.get('conclusion', [])
-    if len(conclusions) != 5:
-        raise ValueError('wechat.conclusion: expected the five detailed analysis sections')
+    if not isinstance(conclusions, list) or not 3 <= len(conclusions) <= 5:
+        raise ValueError('wechat.conclusion: expected 3 to 5 concrete takeaways')
     for i, item in enumerate(conclusions):
         for key in ('title', 'text'):
             required_text(item, key, f'wechat.conclusion[{i}]')

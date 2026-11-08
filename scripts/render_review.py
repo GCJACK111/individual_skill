@@ -1,4 +1,4 @@
-"""Render curated Chinese paper reviews with original figures and detailed AI conclusions."""
+"""Render curated Chinese paper reviews with original figures and concrete, actionable takeaways."""
 import argparse
 from validate_record import load_records, validate_record, digest
 import json
@@ -223,9 +223,8 @@ def generate(record, papers, output):
             pages.append(page)
 
     page = ArticlePage()
-    page.text(record['journal']+'   /   阅读结论与研究参考', BODY, 10, 14, RED, 11)
-    page.heading('04   AI 研读结论')
-    page.text('结合原文分析方法贡献、证据与边界；借鉴方式及后续对比属于研究建议，不代表已完成验证。', size=10.5, leading=17, color=MUTED, after=17)
+    page.text(record['journal']+'   /   方法借鉴', BODY, 10, 14, RED, 11)
+    page.heading('04   我们可以从这篇论文中学到什么')
     for index, item in enumerate(editorial['conclusion'], 1):
         page.text(f"{index}. {item['title']}", HEADING, 13.5, 21, RED, 5)
         page.text(item['text'], size=11.7, leading=20, after=15)

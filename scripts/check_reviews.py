@@ -31,6 +31,8 @@ def inspect_one(path, record):
         full = ''.join(texts)
         required = [record['article']['headline'], record['title']]
         required += [record['wechat'][key] for key in ('problem','method','result')]
+        if normalize('我们可以从这篇论文中学到什么') not in texts[-1]:
+            raise ValueError(f'{path.name}: missing actionable takeaways heading')
         for item in record['wechat']['conclusion']:
             for key in ('title','text'):
                 if normalize(item[key]) not in texts[-1]:
