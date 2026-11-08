@@ -1,0 +1,4 @@
+interface:
+  display_name: "文献逻辑梳理"
+  short_description: "面向初学者梳理论文背景、方法、数据与结果，并生成完整 PDF 总结"
+  default_prompt: "使用 $paper-logic-simplifier，基于我提供的论文材料梳理研究逻辑，写一份易懂的结构化总结，最后生成完整总结的 PDF 文件。"
