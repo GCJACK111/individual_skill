@@ -65,7 +65,7 @@ python "$SKILL_DIR/scripts/check_reviews.py" --records "$RECORDS" --output "$OUT
 
 ## 自动与人工验收分工
 
-`check_reviews.py` 检查：正文与五段结论存在；原文页码说明、全部性能标题/说明存在；预期图像数量；页脚当前页/总页数；页面尺寸。它逐文档隔离渲染，避免本地字体缓存影响检查。可以用 `PDFTOPPM` 指向指定 Poppler；缺失时选择 PDFium。
+`check_reviews.py` 检查：正文、末页学习主题及全部 3–5 条学习要点存在；原文页码说明、全部性能标题/说明存在；预期图像数量；页脚当前页/总页数；页面尺寸。它逐文档隔离渲染，避免本地字体缓存影响检查。可以用 `PDFTOPPM` 指向指定 Poppler；缺失时选择 PDFium。
 
 人工必须继续检查：
 - 中文无乱码/缺字，标题、段落、页脚不重叠；长英文题名和 DOI 不越界。

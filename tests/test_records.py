@@ -17,7 +17,8 @@ BASE['article'].update(headline='测试标题', byline='测试元数据',
 BASE['technical'].update(location='第 1 页', performance=[
     {'page':1,'number':'Table 1','box':[.1,.5,.9,.9], 'title':'测试结果表','guide':'测试表格说明'}])
 BASE['wechat'].update(problem='测试问题',method='测试方法',result='测试结果')
-for section in BASE['wechat']['conclusion']:
+for i, section in enumerate(BASE['wechat']['conclusion'], 1):
+    section['title']=f'测试做法 {i}'
     section['text']='仅用于验证记录结构，不代表论文结论。'
 
 class RecordValidation(unittest.TestCase):
@@ -25,6 +26,18 @@ class RecordValidation(unittest.TestCase):
         validate_record(BASE)
         template=json.loads((ROOT/'assets/record-template.json').read_text(encoding='utf-8'))
         with self.assertRaises(ValueError):validate_record(template)
+
+    def test_takeaway_count_and_substance(self):
+        for count in (3,4,5):
+            r=copy.deepcopy(BASE)
+            r['wechat']['conclusion']=[copy.deepcopy(BASE['wechat']['conclusion'][0]) for _ in range(count)]
+            validate_record(r)
+        for count in (0,2,6):
+            r=copy.deepcopy(BASE)
+            r['wechat']['conclusion']=[copy.deepcopy(BASE['wechat']['conclusion'][0]) for _ in range(count)]
+            with self.assertRaises(ValueError):validate_record(r)
+        r=copy.deepcopy(BASE);r['wechat']['conclusion'][0]['title']=''
+        with self.assertRaises(ValueError):validate_record(r)
 
     def test_bad_crop_or_page(self):
         for box in ([.9,.1,.2,.9],[-.1,0,1,1],[0,0,1,2]):

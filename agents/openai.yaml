@@ -1,4 +1,4 @@
 interface:
   display_name: "公众号论文图文解读"
-  short_description: "生成含原论文路线图、完整性能图表和详细 AI 研读结论的中文公众号风格 PDF"
-  default_prompt: "使用 $paper-logic-simplifier，将我提供的论文生成公众号风格图文解读 PDF，保留原文技术路线、模型及性能图表，末页详细讨论贡献、证据、边界和可借鉴的应用场景，并检查最终排版。"
+  short_description: "生成含原论文路线图、完整性能图表和具体学习要点的中文公众号风格 PDF"
+  default_prompt: "使用 $paper-logic-simplifier，将我提供的论文生成公众号风格图文解读 PDF，保留原文技术路线、模型及性能图表，末页以“我们可以从这篇论文中学到什么”为题，写出 3–5 条具体做法，直接说清学什么、为什么、怎么用，并检查最终排版。"
