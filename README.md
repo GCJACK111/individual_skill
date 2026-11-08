@@ -43,28 +43,29 @@ git clone https://github.com/GCJACK111/paper_skill.git ~/.codex/skills/paper-log
 8. 至少 5 个后续问题及回答
 9. 完整总结 PDF 文件
 
-## PDF 无法下载时
+## 在普通 ChatGPT 中自动生成 PDF
 
-普通聊天窗口如果没有文件生成能力，单靠 skill 指令无法创建附件。现在附带独立的 PDF 导出辅助工具，原有 `SKILL.md` 和文献解读功能保持不变。
+主要通过上传或粘贴在 ChatGPT 使用的用户，请看 [ChatGPT 专用使用说明](CHATGPT_START_HERE.md)。
 
-- **无需编程：** 打开 [浏览器 PDF 导出工具](https://gcjack111.github.io/paper_skill/tools/pdf-export.html)，粘贴完整总结，点击“下载 PDF”。也可以下载仓库后双击 `tools/pdf-export.html` 离线使用。
-- **代码助手：** 使用 `scripts/export_pdf.py` 将完整 Markdown 总结导出为 PDF，依赖见 `requirements.txt`，中文字体已随仓库提供。
-- 安装、操作与排错详见 [PDF_HELP.md](PDF_HELP.md)。工具在本地浏览器处理正文，不上传内容。
+1. 下载 [ChatGPT 专用辅助包](https://github.com/GCJACK111/paper_skill/raw/refs/heads/main/chatgpt/paper-logic-simplifier-chatgpt.zip)。
+2. 把辅助 ZIP 和论文上传到具备数据分析/文件生成工具的 ChatGPT 会话。
+3. 使用说明中的启动语，让 GPT 读取原版主技能和 PDF 补充流程，在会话后台运行导出脚本，最后交付真实 PDF 附件。
 
-主技能保持原样，因此仅调用技能名时，助手不一定会自动读取辅助说明。普通聊天窗口可把 `PDF_HELP.md` 一并提供，或在原请求末尾加上：
+用户不需要编程、安装 Python 或手动把总结复制到转换网页。专用包自带中文字体，导出器只依赖 Python 标准库，无须联网安装第三方库。主 `SKILL.md` 保持原样；需要同时提供辅助 ZIP 与启动语，单独粘贴旧版主技能不会自动载入新文件。
 
-```text
-请按原 skill 完整解读论文。如果当前窗口不能创建可下载的 PDF 附件，请交付完整总结，并提供以下浏览器导出入口及粘贴下载步骤：
-https://gcjack111.github.io/paper_skill/tools/pdf-export.html
-```
+**前提：当前 ChatGPT 会话必须实际具备 Python/文件生成工具。** 上传文件和 skill 指令不会开启工具权限；无法创建附件时，应明确报告，不能输出虚构下载地址。附件失效后需在当前可运行工具的会话重新生成。
 
-未提供或无法读取的论文内容不会被视为已读。普通聊天窗口请交付完整正文与浏览器导出链接，不要声称存在并未生成的 PDF 附件。
+## 其他环境的 PDF 辅助工具
+
+- 支持运行代码的助手可使用 `scripts/export_pdf.py`（依赖见 `requirements.txt`），或使用无需第三方依赖的 `chatgpt/export_pdf.py`。
+- 排错见 [PDF_HELP.md](PDF_HELP.md)。[浏览器导出工具](https://gcjack111.github.io/paper_skill/tools/pdf-export.html) 仅为可选的手动工具，不是 ChatGPT 自动交付方案。
 
 ## 仓库文件
 
 - `SKILL.md`：技能入口和工作规范。
 - `agents/openai.yaml`：Codex 界面显示信息与默认提示。
-- `PDF_HELP.md`：PDF 导出与排错说明。
+- `CHATGPT_START_HERE.md`、`chatgpt/`：普通 ChatGPT 专用上传包、启动语与自动导出流程。
+- `PDF_HELP.md`：其他环境的 PDF 导出与排错说明。
 - `tools/pdf-export.html`：可在线或离线使用的浏览器 PDF 导出工具。
 - `scripts/export_pdf.py`、`requirements.txt`：代码环境的 PDF 导出脚本与依赖。
 - `assets/fonts/`：中文字体与独立的 OFL 字体许可证。
