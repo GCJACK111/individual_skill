@@ -1,4 +1,4 @@
 interface:
-  display_name: "公众号论文图文解读"
-  short_description: "生成含原论文路线图、完整性能图表和简短准确结语的中文公众号风格 PDF"
-  default_prompt: "使用 $paper-logic-simplifier，将我提供的论文生成公众号风格图文解读 PDF，按引言、方法步骤与对应原图、实验验证和简短结语组织，保留完整技术路线、模型及性能图表，结语用一段话准确概括，并检查最终排版。"
+  display_name: "纵向 skill｜单篇论文图文解读"
+  short_description: "摘录两句定位原文，解释作者贡献，逐图解读论文并生成完整 PDF"
+  default_prompt: "使用 $paper-logic-simplifier 纵向解读我提供的论文：先列出 Abstract 第一句及 Introduction 第一自然段最后一句，再展示 Contribution 原文及对应解释，随后嵌入论文原图逐图讲解，最后保留结语并生成完整 PDF。"
