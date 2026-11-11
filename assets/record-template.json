@@ -25,7 +25,21 @@
   "narrative": {
     "sections": [
       {
-        "heading": "引言",
+        "heading": "Abstract第一句",
+        "paragraphs": [
+          ""
+        ],
+        "figure_indices": []
+      },
+      {
+        "heading": "Introduction第一自然段最后一句",
+        "paragraphs": [
+          ""
+        ],
+        "figure_indices": []
+      },
+      {
+        "heading": "Contribution原文与解释",
         "paragraphs": [
           ""
         ],
