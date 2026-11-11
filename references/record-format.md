@@ -13,9 +13,9 @@
 | `title`, `author`, `journal`, `doi` | 原文信息；无 DOI 留空，未知刊物/年份如实说明 |
 | `reference` | 方法、实验、附录和图表出处 |
 | `article.headline`, `byline` | 公众号式中文标题、作者/机构简写 |
-| `article.figures` | 原文路线、模型、机制或数据示意图列表，不限两幅；每项为裁图字段加 `caption`、`guide` |
+| `article.figures` | 原文方法、数据及结果图和需就近解释的原表列表；每项为裁图字段加 `caption`、`guide` |
 | `article.route_missing_reason` | 没有路线/机制图时填写核查后的真实原因 |
-| `narrative.sections` | 正文顺序：引言及按论文流程组织的方法节；每节含 `heading`、`paragraphs`、`figure_indices` |
+| `narrative.sections` | 正文顺序：两句原文定位、作者贡献原文与解释、按主文图号组织的逐图解读；每节含 `heading`、`paragraphs`、`figure_indices` |
 | `narrative.result_heading` | 对应论文实验证据的具体标题 |
 | `narrative.result_paragraphs` | 说明实验对象、参照、评价口径和关键结果的短段落列表 |
 | `narrative.closing` | 一段精确结语，概括方案、关键机制和证据支持的价值；不分条、不塞入实验建议 |
@@ -25,9 +25,14 @@
 
 ## 图文顺序
 
-`paragraphs` 是非空字符串列表，用自然段推进一个问题。`figure_indices` 是 `article.figures` 的 **1 起始索引**；每张方法图必须且只能出现在一个正文节。先读该节文字，再展示对应原图及紧邻的 `guide`。需要图文交替推进时拆成不同小节，不在一个小节里堆全部图片。
+新记录的前三个正文节依次为“Abstract第一句”“Introduction第一自然段最后一句”“Contribution原文与解释”。前两节在paragraphs中分别写原文、中文释义和简明解释；第三节按作者顺序逐条写贡献原文、释义、解释与出处。随后按原图顺序创建图文小节，由figure_indices连接相应图片。
 
-方法图的 `caption` 给中文图名，`guide` 说明图中的模块/箭头怎样支撑这一节的解释。图名和说明放在每张图自己的对象中，不再使用 `caption1/2` 的固定位置。
+原文摘录直接存为原文字符串，不用中文改写代替。章节或明确贡献陈述缺失时，只记录该项真实的材料状态，继续解读。
+
+
+`paragraphs` 是非空字符串列表，用自然段推进一个问题。`figure_indices` 是 `article.figures` 的 **1 起始索引**；每张所列图表必须且只能出现在一个正文节。先读该节文字，再展示对应原图及紧邻的 `guide`。需要图文交替推进时拆成不同小节，不在一个小节里堆全部图片。
+
+每幅图的 `caption` 给中文图名，`guide` 说明图中的模块/箭头怎样支撑这一节的解释。图名和说明放在每张图自己的对象中，不再使用 `caption1/2` 的固定位置。
 
 性能条目按正文论证顺序排列。每项可用 `paragraphs` 放该组实验的设定与关键结果，显示在图前，图后紧跟 `guide`。多组实验分别填写各自的 `paragraphs`，不要把所有分析集中在 `result_paragraphs`；后者只做整体引入。同一图表只放一次，不同时放进方法图和性能列表。跨页表须保留所有部分，图号标成“表 A1（续）”等独立标识；不得因页数或文字精简删掉已核验的性能证据。
 
@@ -64,7 +69,7 @@
 版本 1 的 `wechat.problem/method/result/conclusion` 可按旧版布局原样重建，防止未经阅读自动改变历史内容。要应用新版，助手必须阅读原文后：
 
 1. 保留编号、文件名、原 PDF 和经核验的图表；将每幅方法图的 `captionN/guideN` 移入图对象。
-2. 将正文重新组织为 `narrative.sections`，逐节对应原图，不只替换标题。
+2. 将正文重新组织为 `narrative.sections`，先两句原文及作者贡献，再按图号逐图解释；逐节对应原图。
 3. 核对结果表的实际比较对象、单位和范围，填写实验段与各证据说明。
 4. 重新写一段结语，设 `schema_version: 2`；工作副本可移除过时 `wechat` 字段。
 5. 运行生成与验收，逐页检查。
