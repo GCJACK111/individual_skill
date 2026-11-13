@@ -4,15 +4,16 @@
 
 纵向skill负责单篇内部的深入解读；横向skill负责多篇文献综合与Introduction论证链。英文调用名称保持 `paper-logic-simplifier`。
 
-## 调用示例
+## 使用方法（最简启动语）
 
-上传论文后输入：
+在可联网读取并生成文件的 GPT 会话中上传论文 PDF，然后发送：
 
-> 使用 $paper-logic-simplifier 纵向解读这篇论文：先列出Abstract第一句及Introduction第一自然段最后一句，再展示Contribution原文及对应解释，随后按图号嵌入论文原图并讲解，最后保留结语，生成完整PDF。
+```text
+请读取并使用以下 skill，解读我上传的论文：
+https://raw.githubusercontent.com/GCJACK111/individual_skill/main/SKILL.md
+```
 
-也可以直接说“请用纵向skill解读这篇论文”。批量任务逐篇生成，每篇内容和图表均取自相应原文。
-
-助手自行阅读、定位原句与贡献、提取原图、撰写解释、生成并检查文件。用户无需填写内部记录或手工裁图。
+无需预先下载或上传 `SKILL.md`。论文原图解读和完整 PDF 交付要求已包含在 skill 中。
 
 ## 默认输出顺序
 
